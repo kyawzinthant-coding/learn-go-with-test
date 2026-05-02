@@ -8,3 +8,14 @@ func Sum(numbers []int) int {
 	}
 	return result
 }
+
+func SumAll(numbersToSum ...[]int) []int {
+	numerOfLength := len(numbersToSum)
+	sum := make([]int, numerOfLength)
+
+	for i, number := range numbersToSum {
+		sum[i] = Sum(number)
+	}
+
+	return sum
+}
