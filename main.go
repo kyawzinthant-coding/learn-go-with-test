@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"sort"
-)
+import "fmt"
 
 //problem-1
 // Input:  []int{3, 1, 4, 1, 5, 9, 2, 6}
@@ -12,23 +9,53 @@ import (
 // problem-2
 // Input:  []string{"error", "info", "error", "debug", "error", "info"}
 // Output: map[debug:1 error:3 info:2]
-func main() {
-	input := []string{"error", "info", "error", "debug", "error", "info"}
 
-	result := problem2(input)
+//problem-3
 
-	keys := make([]string, 0, len(result))
-	for k, v := range result {
-		if v > 1 {
-			keys = append(keys, k)
+type task struct {
+	id   int
+	name string
+	done bool
+}
+
+type queue struct {
+	tasks []task
+}
+
+func (q *queue) Add(name string) {
+	newTask := task{
+		id:   len(q.tasks) + 1,
+		name: name,
+	}
+	q.tasks = append(q.tasks, newTask)
+}
+
+func (q *queue) Complete(id int) {
+	for i := range q.tasks {
+		if q.tasks[i].id == id {
+			q.tasks[i].done = true
 		}
 	}
+}
 
-	sort.Strings(keys)
-
-	for _, k := range keys {
-		fmt.Printf("%s: %d\n", k, result[k])
+func (q *queue) Pending() []task {
+	pending := make([]task, 0, len(q.tasks))
+	for _, v := range q.tasks {
+		if !v.done {
+			pending = append(pending, v)
+		}
 	}
+	return pending
+}
+
+func main() {
+	queue := queue{}
+	queue.Add("add migration")
+	queue.Add("add new task")
+	queue.Add("create")
+	queue.Complete(1)
+	result := queue.Pending()
+	fmt.Println(result)
 }
 
 func problem2(n []string) map[string]int {
